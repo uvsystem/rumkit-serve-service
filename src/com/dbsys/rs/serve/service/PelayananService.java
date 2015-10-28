@@ -1,8 +1,11 @@
 package com.dbsys.rs.serve.service;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 import com.dbsys.rs.lib.entity.Pelayanan;
+import com.dbsys.rs.lib.entity.PelayananTemporal;
 
 /**
  * Interface untuk memproses pelayanan tindakan terhadap pasien.
@@ -38,5 +41,9 @@ public interface PelayananService {
 	 * @return daftar pelayanan tindakan
 	 */
 	List<Pelayanan> getByPasien(Long id);
+
+	void keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan);
+
+	void masuk(PelayananTemporal pelayanan);
 
 }
