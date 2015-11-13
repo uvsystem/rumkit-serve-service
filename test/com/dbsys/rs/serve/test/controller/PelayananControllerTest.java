@@ -21,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.dbsys.rs.lib.DateUtil;
 import com.dbsys.rs.lib.Kelas;
-import com.dbsys.rs.lib.Tanggungan;
+import com.dbsys.rs.lib.Penanggung;
 import com.dbsys.rs.lib.entity.Dokter;
 import com.dbsys.rs.lib.entity.KategoriTindakan;
 import com.dbsys.rs.lib.entity.Pasien;
@@ -30,9 +30,10 @@ import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.Penduduk;
 import com.dbsys.rs.lib.entity.Dokter.Spesialisasi;
 import com.dbsys.rs.lib.entity.Pasien.StatusPasien;
-import com.dbsys.rs.lib.entity.Pasien.Type;
+import com.dbsys.rs.lib.entity.Pasien.Perawatan;
 import com.dbsys.rs.lib.entity.Penduduk.Kelamin;
-import com.dbsys.rs.lib.entity.Tindakan.Satuan;
+import com.dbsys.rs.lib.entity.Tagihan.StatusTagihan;
+import com.dbsys.rs.lib.entity.Tindakan.SatuanTindakan;
 import com.dbsys.rs.lib.entity.Tindakan;
 import com.dbsys.rs.lib.entity.Unit;
 import com.dbsys.rs.serve.repository.PelayananRepository;
@@ -74,8 +75,8 @@ public class PelayananControllerTest {
 		tindakan.setKeterangan(null);
 		tindakan.setKode("TDKxxxxxxx");
 		tindakan.setNama("Nama Tindakan xxxxxxx");
-		tindakan.setSatuan(Satuan.TINDAKAN);
-		tindakan.setTanggungan(Tanggungan.BPJS);
+		tindakan.setSatuan(SatuanTindakan.TINDAKAN);
+		tindakan.setPenanggung(Penanggung.BPJS);
 		tindakan.setTarif(20000l);
 		
 		Penduduk penduduk = new Penduduk();
@@ -90,9 +91,9 @@ public class PelayananControllerTest {
 
 		Pasien pasien = new Pasien();
 		pasien.setPenduduk(penduduk);
-		pasien.setTanggungan(Tanggungan.BPJS);
-		pasien.setStatus(StatusPasien.OPEN);
-		pasien.setTipe(Type.RAWAT_JALAN);
+		pasien.setPenanggung(Penanggung.BPJS);
+		pasien.setStatus(StatusPasien.PERAWATAN);
+		pasien.setTipePerawatan(Perawatan.RAWAT_JALAN);
 		pasien.setTanggalMasuk(DateUtil.getDate());
 		pasien.generateKode();
 		
@@ -112,7 +113,7 @@ public class PelayananControllerTest {
 		
 		Unit unit = new Unit();
 		unit.setNama("Nama Unit xxxxxxxx");
-		unit.setTipe(Unit.Type.FARMASI);
+		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
 		unit.setBobot(1f);
 		
 		pelayanan = new Pelayanan();
@@ -124,6 +125,7 @@ public class PelayananControllerTest {
 		pelayanan.setJumlah(2);
 		pelayanan.setKeterangan("Biaya Administrasi");
 		pelayanan.setTanggal(DateUtil.getDate());
+		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 		pelayanan = pelayananService.simpan(pelayanan);
 
 		assertEquals(count + 1, pelayananRepository.count());
@@ -135,7 +137,9 @@ public class PelayananControllerTest {
 		this.mockMvc.perform(
 				post("/pelayanan")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"tindakan\": {"
+				.content("{"
+						+ "\"name\": \"PELAYANAN\","
+						+ "\"tindakan\": {"
 						+ "\"kategori\": {"
 						+ "\"nama\": \"Kategorixxxx\""
 						+ "},"
@@ -144,7 +148,7 @@ public class PelayananControllerTest {
 						+ "\"kode\":\"TDK xxxx\","
 						+ "\"nama\": \"Nama asasasasasa\","
 						+ "\"satuan\":\"TINDAKAN\","
-						+ "\"tanggungan\":\"UMUM\","
+						+ "\"penanggung\":\"UMUM\","
 						+ "\"tarif\":\"100000\""
 						+ "},"
 						+ "\"pasien\": {"
@@ -158,9 +162,9 @@ public class PelayananControllerTest {
 						+ "\"telepon\":\"telepon 2\","
 						+ "\"kode\": \"KODE\""
 						+ "},"
-						+ "\"tanggungan\": \"BPJS\","
-						+ "\"status\": \"OPEN\","
-						+ "\"tipe\": \"RAWAT_JALAN\","
+						+ "\"penanggung\": \"BPJS\","
+						+ "\"status\": \"PERAWATAN\","
+						+ "\"tipePerawatan\": \"RAWAT_JALAN\","
 						+ "\"tanggalMasuk\": \"2015-10-1\","
 						+ "\"kode\": \"KODE\""
 						+ "},"
@@ -175,17 +179,19 @@ public class PelayananControllerTest {
 						+ "\"telepon\":\"telepon 2\","
 						+ "\"kode\": \"KODE xxx-xxx-xxx\""
 						+ "},"
-						+ "\"nip\":\"nip xxxxx\""
+						+ "\"nip\":\"nip xxxxx\","
+						+ "\"name\": \"DOKTER\""
 						+ "},"
 						+ "\"unit\":{"
 						+ "\"nama\": \"Unit xxxxxxxxx\","
-						+ "\"tipe\": \"FARMASI\","
+						+ "\"tipe\": \"APOTEK_FARMASI\","
 						+ "\"bobot\": \"1\""
 						+ "},"
 						+ "\"biayaTambahan\":\"0\","
 						+ "\"jumlah\":\"1\","
 						+ "\"keterangan\":\"Keterangan\","
-						+ "\"tanggal\":\"2015-10-14\""
+						+ "\"tanggal\":\"2015-10-14\","
+						+ "\"status\": \"MENUNGGAK\""
 						+ "}")
 			)
 			.andExpect(jsonPath("$.tipe").value("ENTITY"))

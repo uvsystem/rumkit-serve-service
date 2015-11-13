@@ -12,7 +12,7 @@ import com.dbsys.rs.lib.DateUtil;
 import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
-import com.dbsys.rs.lib.entity.Pasien.Type;
+import com.dbsys.rs.lib.entity.Pasien.Perawatan;
 import com.dbsys.rs.serve.repository.PasienRepository;
 import com.dbsys.rs.serve.repository.PelayananRepository;
 import com.dbsys.rs.serve.service.PelayananService;
@@ -56,7 +56,7 @@ public class PelayananServiceImpl implements PelayananService {
 		}
 		
 		pasienRepository.convert(pelayanan.getPasien().getId(), 
-			pelayanan.getTindakan().getKelas(), Type.RAWAT_INAP, pelayanan);
+			pelayanan.getTindakan().getKelas(), Perawatan.RAWAT_INAP, pelayanan);
 	}
 
 	@Override
