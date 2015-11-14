@@ -132,7 +132,7 @@ public class PelayananControllerTest {
 				post("/pelayanan")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{"
-						+ "\"name\": \"PELAYANAN\","
+						+ "\"tipePelayanan\": \"PELAYANAN\","
 						+ "\"tindakan\": {"
 						+ "\"kelas\": \"I\","
 						+ "\"keterangan\": \"-\","
@@ -171,7 +171,7 @@ public class PelayananControllerTest {
 						+ "\"kode\": \"KODE xxx-xxx-xxx\""
 						+ "},"
 						+ "\"nip\":\"nip xxxxx\","
-						+ "\"name\": \"DOKTER\""
+						+ "\"tipePegawai\": \"DOKTER\""
 						+ "},"
 						+ "\"unit\":{"
 						+ "\"nama\": \"Unit xxxxxxxxx\","
@@ -187,6 +187,7 @@ public class PelayananControllerTest {
 			)
 			.andExpect(jsonPath("$.tipe").value("ENTITY"))
 			.andExpect(jsonPath("$.model.tagihan").value(100000))
+			.andExpect(jsonPath("$.model.tipe").value("PELAYANAN"))
 			.andExpect(jsonPath("$.message").value("Berhasil"));
 
 		assertEquals(count + 2, pelayananRepository.count());
