@@ -23,7 +23,6 @@ import com.dbsys.rs.lib.DateUtil;
 import com.dbsys.rs.lib.Kelas;
 import com.dbsys.rs.lib.Penanggung;
 import com.dbsys.rs.lib.entity.Dokter;
-import com.dbsys.rs.lib.entity.KategoriTindakan;
 import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pegawai;
 import com.dbsys.rs.lib.entity.Pelayanan;
@@ -65,12 +64,7 @@ public class PelayananControllerTest {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		
 		count = pelayananRepository.count();
-
-		KategoriTindakan kategori = new KategoriTindakan();
-		kategori.setNama("Kategori xxxxxxxx");
-		
 		Tindakan tindakan = new Tindakan();
-		tindakan.setKategori(kategori);
 		tindakan.setKelas(Kelas.I);
 		tindakan.setKeterangan(null);
 		tindakan.setKode("TDKxxxxxxx");
@@ -140,9 +134,6 @@ public class PelayananControllerTest {
 				.content("{"
 						+ "\"name\": \"PELAYANAN\","
 						+ "\"tindakan\": {"
-						+ "\"kategori\": {"
-						+ "\"nama\": \"Kategorixxxx\""
-						+ "},"
 						+ "\"kelas\": \"I\","
 						+ "\"keterangan\": \"-\","
 						+ "\"kode\":\"TDK xxxx\","
