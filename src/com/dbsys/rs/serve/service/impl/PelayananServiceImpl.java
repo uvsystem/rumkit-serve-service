@@ -13,6 +13,7 @@ import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
 import com.dbsys.rs.lib.entity.Pasien.Perawatan;
+import com.dbsys.rs.lib.entity.Tagihan.StatusTagihan;
 import com.dbsys.rs.serve.repository.PasienRepository;
 import com.dbsys.rs.serve.repository.PelayananRepository;
 import com.dbsys.rs.serve.service.PelayananService;
@@ -31,6 +32,8 @@ public class PelayananServiceImpl implements PelayananService {
 	public Pelayanan simpan(Pelayanan pelayanan) {
 		if (pelayanan.getTanggal() == null)
 			pelayanan.setTanggal(DateUtil.getDate());
+		
+		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 		pelayanan = pelayananRepository.save(pelayanan);
 		
 		return pelayanan;
@@ -45,6 +48,7 @@ public class PelayananServiceImpl implements PelayananService {
 		if (pelayanan.getJamMasuk() == null)
 			pelayanan.setJamMasuk(DateUtil.getTime());
 
+		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 		pelayanan = pelayananRepository.save(pelayanan);
 
 		PelayananTemporal pelayananOld = pelayanan.getPasien().getPerawatan();
@@ -55,8 +59,9 @@ public class PelayananServiceImpl implements PelayananService {
 			pelayananOld = pelayananRepository.save(pelayananOld);
 		}
 		
+		Date tanggalRawatInap = DateUtil.getDate();
 		pasienRepository.convert(pelayanan.getPasien().getId(), 
-			pelayanan.getTindakan().getKelas(), Perawatan.RAWAT_INAP, pelayanan);
+			Perawatan.RAWAT_INAP, pelayanan, tanggalRawatInap);
 	}
 
 	@Override

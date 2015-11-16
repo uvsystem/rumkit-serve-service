@@ -28,7 +28,7 @@ public class PelayananController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public EntityRestMessage<Pelayanan> simpan(@RequestBody Pelayanan pelayanan) throws ApplicationException, PersistenceException {
-		pelayanan = (Pelayanan)pelayananService.simpan(pelayanan);
+		pelayanan = pelayananService.simpan(pelayanan);
 		return EntityRestMessage.createPelayanan(pelayanan);
 	}
 	

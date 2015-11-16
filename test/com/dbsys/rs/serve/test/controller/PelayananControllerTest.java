@@ -24,6 +24,7 @@ import com.dbsys.rs.lib.Kelas;
 import com.dbsys.rs.lib.Penanggung;
 import com.dbsys.rs.lib.entity.Dokter;
 import com.dbsys.rs.lib.entity.Pasien;
+import com.dbsys.rs.lib.entity.Pasien.Pendaftaran;
 import com.dbsys.rs.lib.entity.Pegawai;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.Penduduk;
@@ -35,6 +36,7 @@ import com.dbsys.rs.lib.entity.Tagihan.StatusTagihan;
 import com.dbsys.rs.lib.entity.Tindakan.SatuanTindakan;
 import com.dbsys.rs.lib.entity.Tindakan;
 import com.dbsys.rs.lib.entity.Unit;
+import com.dbsys.rs.serve.repository.PasienRepository;
 import com.dbsys.rs.serve.repository.PelayananRepository;
 import com.dbsys.rs.serve.service.PelayananService;
 import com.dbsys.rs.serve.test.TestConfig;
@@ -56,8 +58,11 @@ public class PelayananControllerTest {
 	private PelayananService pelayananService;
 	@Autowired
 	private PelayananRepository pelayananRepository;
+	@Autowired
+	private PasienRepository pasienRepository;
 
 	private Pelayanan pelayanan;
+	private Pasien pasien;
 	
 	@Before
 	public void setup() {
@@ -82,14 +87,24 @@ public class PelayananControllerTest {
 		penduduk.setTanggalLahir(DateUtil.getDate());
 		penduduk.setTelepon("Telepon");
 		penduduk.generateKode();
+		
+		Unit unit = new Unit();
+		unit.setNama("Nama Unit xxxxxxxx");
+		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
+		unit.setBobot(1f);
 
-		Pasien pasien = new Pasien();
+		pasien = new Pasien();
 		pasien.setPenduduk(penduduk);
 		pasien.setPenanggung(Penanggung.BPJS);
 		pasien.setStatus(StatusPasien.PERAWATAN);
 		pasien.setTipePerawatan(Perawatan.RAWAT_JALAN);
 		pasien.setTanggalMasuk(DateUtil.getDate());
+		pasien.setPendaftaran(Pendaftaran.LOKET);
+		pasien.setTujuan(unit);
 		pasien.generateKode();
+		pasien = pasienRepository.save(pasien);
+		
+		unit = pasien.getTujuan();
 		
 		Penduduk penduduk2 = new Penduduk();
 		penduduk2.setAgama("Kristen");
@@ -104,11 +119,6 @@ public class PelayananControllerTest {
 		Pegawai pegawai = new Dokter(Spesialisasi.UMUM);
 		pegawai.setPenduduk(penduduk2);
 		pegawai.setNip("Nip xxxxxxxx");
-		
-		Unit unit = new Unit();
-		unit.setNama("Nama Unit xxxxxxxx");
-		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
-		unit.setBobot(1f);
 		
 		pelayanan = new Pelayanan();
 		pelayanan.setTindakan(tindakan);
@@ -143,6 +153,7 @@ public class PelayananControllerTest {
 						+ "\"tarif\":\"100000\""
 						+ "},"
 						+ "\"pasien\": {"
+						+ "\"id\": \"" + pasien.getId() + "\","
 						+ "\"penduduk\": {"
 						+ "\"agama\": \"Kristen\","
 						+ "\"darah\": \"O\","
