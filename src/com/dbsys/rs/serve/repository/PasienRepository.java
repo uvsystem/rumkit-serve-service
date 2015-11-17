@@ -19,6 +19,6 @@ public interface PasienRepository extends JpaRepository<Pasien, Long> {
 
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Pasien p SET p.perawatan = :perawatan WHERE p.id = :id")
-	void convert(Long id, PelayananTemporal pelayanan);
+	void convert(@Param("id") Long id, @Param("perawatan") PelayananTemporal pelayanan);
 	
 }
