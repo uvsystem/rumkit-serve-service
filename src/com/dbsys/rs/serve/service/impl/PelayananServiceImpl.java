@@ -31,14 +31,19 @@ public class PelayananServiceImpl implements PelayananService {
 	@Override
 	@Transactional(readOnly = false)
 	public Pelayanan simpan(Pelayanan pelayanan) {
-		Pasien pasien = pelayanan.getPasien();
-		pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() + pelayanan.getTagihan()));
-				
 		if (pelayanan.getTanggal() == null)
 			pelayanan.setTanggal(DateUtil.getDate());
-		
-		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
+
+		if (pelayanan.getStatus() == null)
+			pelayanan.setStatus(StatusTagihan.MENUNGGAK);
+
+		Pasien pasien = pelayanan.getPasien();
+
 		pelayanan = pelayananRepository.save(pelayanan);
+
+		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
+		long totalTagihan = tagihanPasien + pasien.getTotalTagihan();
+		pasienRepository.updateTagihan(pasien.getId(), totalTagihan);
 		
 		return pelayanan;
 	}
@@ -91,18 +96,23 @@ public class PelayananServiceImpl implements PelayananService {
 		
 		pelayananRepository.update(pasien, tanggal, jam, tambahan, keterangan, jumlah);
 
-		pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() + pelayanan.getTagihan()), null);
+		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
+		long totalTagihan = tagihanPasien + pasien.getTotalTagihan();
+		pasienRepository.updateTagihan(pasien.getId(), totalTagihan, null);
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public void hapus(Long id) {
 		Pelayanan pelayanan = pelayananRepository.findOne(id);
 		Pasien pasien = pelayanan.getPasien();
+		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
+		long totalTagihan = tagihanPasien - pelayanan.getTagihan();
 		
 		if (pelayanan.equals(pasien.getPerawatan())) {
-			pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() - pelayanan.getTagihan()), null);
+			pasienRepository.updateTagihan(pasien.getId(), totalTagihan, null);
 		} else {
-			pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() - pelayanan.getTagihan()));
+			pasienRepository.updateTagihan(pasien.getId(), totalTagihan);
 		}
 		
 		pelayananRepository.delete(id);
