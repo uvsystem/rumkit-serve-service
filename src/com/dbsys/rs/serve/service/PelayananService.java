@@ -46,4 +46,6 @@ public interface PelayananService {
 
 	void masuk(PelayananTemporal pelayanan);
 
+	void hapus(Long id);
+
 }

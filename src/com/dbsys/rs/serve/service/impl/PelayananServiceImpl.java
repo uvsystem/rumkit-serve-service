@@ -31,6 +31,9 @@ public class PelayananServiceImpl implements PelayananService {
 	@Override
 	@Transactional(readOnly = false)
 	public Pelayanan simpan(Pelayanan pelayanan) {
+		Pasien pasien = pelayanan.getPasien();
+		pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() + pelayanan.getTagihan()));
+				
 		if (pelayanan.getTanggal() == null)
 			pelayanan.setTanggal(DateUtil.getDate());
 		
@@ -88,7 +91,21 @@ public class PelayananServiceImpl implements PelayananService {
 		
 		pelayananRepository.update(pasien, tanggal, jam, tambahan, keterangan, jumlah);
 
-		pasienRepository.convert(id, null);
+		pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() + pelayanan.getTagihan()), null);
+	}
+
+	@Override
+	public void hapus(Long id) {
+		Pelayanan pelayanan = pelayananRepository.findOne(id);
+		Pasien pasien = pelayanan.getPasien();
+		
+		if (pelayanan.equals(pasien.getPerawatan())) {
+			pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() - pelayanan.getTagihan()), null);
+		} else {
+			pasienRepository.updateTagihan(pasien.getId(), (pasien.getTotalTagihan() - pelayanan.getTagihan()));
+		}
+		
+		pelayananRepository.delete(id);
 	}
 
 	@Override
