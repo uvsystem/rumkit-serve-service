@@ -37,13 +37,11 @@ public class PelayananServiceImpl implements PelayananService {
 		if (pelayanan.getStatus() == null)
 			pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 
-		Pasien pasien = pelayanan.getPasien();
-
+		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+		pasien.addTotalTagihan(pelayanan.getTagihan());
+		pelayanan.setPasien(pasien);
+		
 		pelayanan = pelayananRepository.save(pelayanan);
-
-		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
-		long totalTagihan = tagihanPasien + pasien.getTotalTagihan();
-		pasienRepository.updateTagihan(pasien.getId(), totalTagihan);
 		
 		return pelayanan;
 	}
@@ -51,15 +49,6 @@ public class PelayananServiceImpl implements PelayananService {
 	@Override
 	@Transactional(readOnly = false)
 	public void masuk(PelayananTemporal pelayanan) {
-		if (pelayanan.getTanggal() == null)
-			pelayanan.setTanggal(DateUtil.getDate());
-
-		if (pelayanan.getJamMasuk() == null)
-			pelayanan.setJamMasuk(DateUtil.getTime());
-
-		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
-		pelayanan = pelayananRepository.save(pelayanan);
-
 		PelayananTemporal pelayananOld = pelayanan.getPasien().getPerawatan();
 		if (pelayananOld != null) {
 			pelayananOld.setTanggalSelesai(DateUtil.getDate());
@@ -67,55 +56,60 @@ public class PelayananServiceImpl implements PelayananService {
 			
 			pelayananOld = pelayananRepository.save(pelayananOld);
 		}
-		
-		if (TipeUnit.UGD.equals(pelayanan.getUnit().getTipe())) {
-			pasienRepository.convert(pelayanan.getPasien().getId(), pelayanan);
-		} else {
-			Date tanggalRawatInap = DateUtil.getDate();
-			pasienRepository.convert(pelayanan.getPasien().getId(), Perawatan.RAWAT_INAP, pelayanan, tanggalRawatInap);
+
+		if (pelayanan.getTanggal() == null)
+			pelayanan.setTanggal(DateUtil.getDate());
+
+		if (pelayanan.getJamMasuk() == null)
+			pelayanan.setJamMasuk(DateUtil.getTime());
+
+		if (TipeUnit.RUANG_PERAWATAN.equals(pelayanan.getUnit().getTipe())) {
+			pelayanan.getPasien().setTipePerawatan(Perawatan.RAWAT_INAP);
+			pelayanan.getPasien().setTanggalRawatInap(DateUtil.getDate());
 		}
+
+		pelayanan.getPasien().setPerawatan(pelayanan);
+		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
+		pelayanan = pelayananRepository.save(pelayanan);
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public void keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan) {
-		Pasien pasien = pasienRepository.findOne(id);
-
+	public Pelayanan keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan) {
 		if (tanggal == null)
 			tanggal = DateUtil.getDate();
 		
 		if (jam == null)
 			jam = DateUtil.getTime();
 		
+		Pasien pasien = pasienRepository.findOne(id);
+
 		PelayananTemporal pelayanan = pasien.getPerawatan();
 		pelayanan.setTanggalSelesai(tanggal);
 		pelayanan.setJamKeluar(jam);
-		pelayanan.getTagihan();
-		
-		int jumlah = pelayanan.getJumlah();
-		
-		pelayananRepository.update(pasien, tanggal, jam, tambahan, keterangan, jumlah);
+		pelayanan.setBiayaTambahan(tambahan);
+		pelayanan.setKeterangan(keterangan);
 
-		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
-		long totalTagihan = tagihanPasien + pasien.getTotalTagihan();
-		pasienRepository.updateTagihan(pasien.getId(), totalTagihan, null);
+		pasien.addTotalTagihan(pelayanan.getTagihan());
+		pelayanan.setPasien(pasien);
+		
+		pelayanan = pelayananRepository.save(pelayanan);
+
+		return pelayanan;
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public void hapus(Long id) {
+	public Pasien hapus(Long id) {
 		Pelayanan pelayanan = pelayananRepository.findOne(id);
-		Pasien pasien = pelayanan.getPasien();
-		long tagihanPasien = pasien.getTotalTagihan() == null ? 0 : pasien.getTotalTagihan();
-		long totalTagihan = tagihanPasien - pelayanan.getTagihan();
-		
-		if (pelayanan.equals(pasien.getPerawatan())) {
-			pasienRepository.updateTagihan(pasien.getId(), totalTagihan, null);
-		} else {
-			pasienRepository.updateTagihan(pasien.getId(), totalTagihan);
-		}
-		
 		pelayananRepository.delete(id);
+
+		Pasien pasien = pasienRepository.findOne(pelayanan.getId());
+		pasien.substractTotalTagihan(pelayanan.getTagihan());
+		
+		pasien = pasienRepository.save(pasien);
+		
+		return pasien;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
 
@@ -42,10 +43,10 @@ public interface PelayananService {
 	 */
 	List<Pelayanan> getByPasien(Long id);
 
-	void keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan);
+	Pelayanan keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan);
 
 	void masuk(PelayananTemporal pelayanan);
 
-	void hapus(Long id);
+	Pasien hapus(Long id);
 
 }

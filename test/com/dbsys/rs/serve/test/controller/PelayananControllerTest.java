@@ -1,8 +1,7 @@
 package com.dbsys.rs.serve.test.controller;
 
 import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.Before;
@@ -72,7 +71,7 @@ public class PelayananControllerTest {
 		Tindakan tindakan = new Tindakan();
 		tindakan.setKelas(Kelas.I);
 		tindakan.setKeterangan(null);
-		tindakan.setKode("TDKxxxxxxx");
+		tindakan.setKode("TDKxxxxxxxx");
 		tindakan.setNama("Nama Tindakan xxxxxxx");
 		tindakan.setSatuan(SatuanTindakan.TINDAKAN);
 		tindakan.setPenanggung(Penanggung.BPJS);
@@ -83,17 +82,19 @@ public class PelayananControllerTest {
 		penduduk.setDarah("O");
 		penduduk.setKelamin(Kelamin.PRIA);
 		penduduk.setNama("Penduduk xxxxxxx");
-		penduduk.setNik("Nik xxxxxx");
+		penduduk.setNik("Nik xxxxxxx");
 		penduduk.setTanggalLahir(DateUtil.getDate());
 		penduduk.setTelepon("Telepon");
 		penduduk.generateKode();
 		
 		Unit unit = new Unit();
-		unit.setNama("Nama Unit xxxxxxxx");
+		unit.setNama("Nama Unit xxxxxxxxx");
 		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
 		unit.setBobot(1f);
 
 		pasien = new Pasien();
+		String kode = pasien.generateKode();
+
 		pasien.setPenduduk(penduduk);
 		pasien.setPenanggung(Penanggung.BPJS);
 		pasien.setStatus(StatusPasien.PERAWATAN);
@@ -101,10 +102,8 @@ public class PelayananControllerTest {
 		pasien.setTanggalMasuk(DateUtil.getDate());
 		pasien.setPendaftaran(Pendaftaran.LOKET);
 		pasien.setTujuan(unit);
-		pasien.generateKode();
+		pasien.setKode(kode);
 		pasien = pasienRepository.save(pasien);
-		
-		unit = pasien.getTujuan();
 		
 		Penduduk penduduk2 = new Penduduk();
 		penduduk2.setAgama("Kristen");
@@ -199,9 +198,21 @@ public class PelayananControllerTest {
 			.andExpect(jsonPath("$.tipe").value("ENTITY"))
 			.andExpect(jsonPath("$.model.tagihan").value(100000))
 			.andExpect(jsonPath("$.model.tipe").value("PELAYANAN"))
+			.andExpect(jsonPath("$.model.pasien.totalTagihan").value(100000))
 			.andExpect(jsonPath("$.message").value("Berhasil"));
 
 		assertEquals(count + 2, pelayananRepository.count());
+	}
+
+	@Test
+	public void testHapus() throws Exception {
+		this.mockMvc.perform(
+				delete(String.format("/pelayanan/%d", pelayanan.getId()))
+				.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(jsonPath("$.tipe").value("ENTITY"))
+			.andExpect(jsonPath("$.model.totalTagihan").value(0))
+			.andExpect(jsonPath("$.message").value("Berhasil"));
 	}
 
 	@Test

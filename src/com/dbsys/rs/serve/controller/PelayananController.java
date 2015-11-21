@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.dbsys.rs.lib.ApplicationException;
 import com.dbsys.rs.lib.EntityRestMessage;
 import com.dbsys.rs.lib.ListEntityRestMessage;
-import com.dbsys.rs.lib.RestMessage;
+import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.serve.service.PelayananService;
 
@@ -35,9 +35,9 @@ public class PelayananController {
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	@ResponseBody
-	public RestMessage hapus(@PathVariable Long id) throws ApplicationException, PersistenceException {
-		pelayananService.hapus(id);
-		return RestMessage.success();
+	public EntityRestMessage<Pasien> hapus(@PathVariable Long id) throws ApplicationException, PersistenceException {
+		Pasien pasien = pelayananService.hapus(id);
+		return EntityRestMessage.createPasien(pasien);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
