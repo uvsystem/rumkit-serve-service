@@ -38,6 +38,20 @@ public class PelayananServiceImpl implements PelayananService {
 			pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 
 		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+
+		/**
+		 * Jika pelayanan PERSISTED (merupakan fungsi update),
+		 * kurangi total tagihan pasien, sesuai tagihan pelayanan yang lama.
+		 */
+		if (pelayanan.isPersisted()) {
+			Pelayanan pelayananOld = pelayananRepository.findOne(pelayanan.getId());
+			
+			pasien.substractTotalTagihan(pelayananOld.getTagihan());
+		}
+
+		/**
+		 * Tambahkan tagihan pelayanan yang baru ke total tagihan pasien.
+		 */
 		pasien.addTotalTagihan(pelayanan.getTagihan());
 		pelayanan.setPasien(pasien);
 		
