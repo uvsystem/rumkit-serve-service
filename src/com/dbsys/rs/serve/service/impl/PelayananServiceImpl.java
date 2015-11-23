@@ -104,7 +104,7 @@ public class PelayananServiceImpl implements PelayananService {
 		Pelayanan pelayanan = pelayananRepository.findOne(id);
 		pelayananRepository.delete(id);
 
-		Pasien pasien = pasienRepository.findOne(pelayanan.getId());
+		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
 		pasien.substractTotalTagihan(pelayanan.getTagihan());
 		
 		pasien = pasienRepository.save(pasien);

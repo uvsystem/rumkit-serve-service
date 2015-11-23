@@ -71,24 +71,24 @@ public class PelayananControllerTest {
 		Tindakan tindakan = new Tindakan();
 		tindakan.setKelas(Kelas.I);
 		tindakan.setKeterangan(null);
-		tindakan.setKode("TDKxxxxxxxx");
+		tindakan.setKode("TDKxxxxxxxxxxxxxxxxx");
 		tindakan.setNama("Nama Tindakan xxxxxxx");
 		tindakan.setSatuan(SatuanTindakan.TINDAKAN);
 		tindakan.setPenanggung(Penanggung.BPJS);
 		tindakan.setTarif(20000l);
 		
 		Penduduk penduduk = new Penduduk();
+		penduduk.setKode("kode xxxxxxxxxxxxx");
 		penduduk.setAgama("Kristen");
 		penduduk.setDarah("O");
 		penduduk.setKelamin(Kelamin.PRIA);
-		penduduk.setNama("Penduduk xxxxxxx");
-		penduduk.setNik("Nik xxxxxxx");
+		penduduk.setNama("Penduduk xxxxxxxxxxxxx");
+		penduduk.setNik("Nik xxxxxxxxxxxxx");
 		penduduk.setTanggalLahir(DateUtil.getDate());
 		penduduk.setTelepon("Telepon");
-		penduduk.generateKode();
 		
 		Unit unit = new Unit();
-		unit.setNama("Nama Unit xxxxxxxxx");
+		unit.setNama("Nama Unit xxxxxxxxxxxxxxx");
 		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
 		unit.setBobot(1f);
 
@@ -106,18 +106,18 @@ public class PelayananControllerTest {
 		pasien = pasienRepository.save(pasien);
 		
 		Penduduk penduduk2 = new Penduduk();
+		penduduk2.setKode("kode yyyyyyyyy");
 		penduduk2.setAgama("Kristen");
 		penduduk2.setDarah("O");
 		penduduk2.setKelamin(Kelamin.PRIA);
-		penduduk2.setNama("Penduduk xxxxxxxxxxxxx");
-		penduduk2.setNik("Nik xxxxxxxxxxx");
+		penduduk2.setNama("Penduduk yyyyyyyyyyyyyy");
+		penduduk2.setNik("Nik yyyyyyyyyyyyyy");
 		penduduk2.setTanggalLahir(DateUtil.getDate());
 		penduduk2.setTelepon("Telepon");
-		penduduk2.generateKode();
 		
 		Pegawai pegawai = new Dokter(Spesialisasi.UMUM);
 		pegawai.setPenduduk(penduduk2);
-		pegawai.setNip("Nip xxxxxxxx");
+		pegawai.setNip("Nip xxxxxxxxxxxxxx");
 		
 		pelayanan = new Pelayanan();
 		pelayanan.setTindakan(tindakan);
@@ -198,7 +198,76 @@ public class PelayananControllerTest {
 			.andExpect(jsonPath("$.tipe").value("ENTITY"))
 			.andExpect(jsonPath("$.model.tagihan").value(100000))
 			.andExpect(jsonPath("$.model.tipe").value("PELAYANAN"))
-			.andExpect(jsonPath("$.model.pasien.totalTagihan").value(100000))
+			.andExpect(jsonPath("$.model.pasien.totalTagihan").value(150000))
+			.andExpect(jsonPath("$.message").value("Berhasil"));
+
+		assertEquals(count + 2, pelayananRepository.count());
+	}
+	
+	@Test
+	public void testSimpanIcu() throws Exception {
+		this.mockMvc.perform(
+				post("/pelayanan")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{"
+						+ "\"tipePelayanan\": \"PELAYANAN\","
+						+ "\"tindakan\": {"
+						+ "\"kelas\": \"I\","
+						+ "\"keterangan\": \"-\","
+						+ "\"kode\":\"TDK xxxx\","
+						+ "\"nama\": \"Nama asasasasasa\","
+						+ "\"satuan\":\"TINDAKAN\","
+						+ "\"penanggung\":\"UMUM\","
+						+ "\"tarif\":\"100000\""
+						+ "},"
+						+ "\"pasien\": {"
+						+ "\"id\": \"" + pasien.getId() + "\","
+						+ "\"penduduk\": {"
+						+ "\"agama\": \"Kristen\","
+						+ "\"darah\": \"O\","
+						+ "\"kelamin\": \"PRIA\","
+						+ "\"nama\":\"Penduduk xxxx\","
+						+ "\"nik\":\"nik xxxx\","
+						+ "\"tanggalLahir\":\"1991-12-05\","
+						+ "\"telepon\":\"telepon 2\","
+						+ "\"kode\": \"KODE\""
+						+ "},"
+						+ "\"penanggung\": \"BPJS\","
+						+ "\"status\": \"PERAWATAN\","
+						+ "\"tipePerawatan\": \"RAWAT_JALAN\","
+						+ "\"tanggalMasuk\": \"2015-10-1\","
+						+ "\"kode\": \"KODE\""
+						+ "},"
+						+ "\"pelaksana\": {"
+						+ "\"penduduk\": {"
+						+ "\"agama\": \"Kristen\","
+						+ "\"darah\": \"O\","
+						+ "\"kelamin\": \"PRIA\","
+						+ "\"nama\":\"Penduduk xxx-xxx-xxx-xxx\","
+						+ "\"nik\":\"nik xxxx-xxxx-xxxx-xxxx\","
+						+ "\"tanggalLahir\":\"1991-12-05\","
+						+ "\"telepon\":\"telepon 2\","
+						+ "\"kode\": \"KODE xxx-xxx-xxx\""
+						+ "},"
+						+ "\"nip\":\"nip xxxxx\","
+						+ "\"tipePegawai\": \"DOKTER\""
+						+ "},"
+						+ "\"unit\":{"
+						+ "\"nama\": \"Unit xxxxxxxxx\","
+						+ "\"tipe\": \"ICU\","
+						+ "\"bobot\": \"1\""
+						+ "},"
+						+ "\"biayaTambahan\":\"0\","
+						+ "\"jumlah\":\"1\","
+						+ "\"keterangan\":\"Keterangan\","
+						+ "\"tanggal\":\"2015-10-14\","
+						+ "\"status\": \"MENUNGGAK\""
+						+ "}")
+			)
+			.andExpect(jsonPath("$.tipe").value("ENTITY"))
+			.andExpect(jsonPath("$.model.tagihan").value(200000))
+			.andExpect(jsonPath("$.model.tipe").value("PELAYANAN"))
+			.andExpect(jsonPath("$.model.pasien.totalTagihan").value(250000))
 			.andExpect(jsonPath("$.message").value("Berhasil"));
 
 		assertEquals(count + 2, pelayananRepository.count());
@@ -222,6 +291,7 @@ public class PelayananControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 			)
 			.andExpect(jsonPath("$.tipe").value("ENTITY"))
+			.andExpect(jsonPath("$.model.pasien.totalTagihan").value(50000))
 			.andExpect(jsonPath("$.message").value("Berhasil"));
 	}
 
