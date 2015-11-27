@@ -63,19 +63,24 @@ public class PelayananServiceImpl implements PelayananService {
 	@Override
 	@Transactional(readOnly = false)
 	public void masuk(PelayananTemporal pelayanan) {
-		PelayananTemporal pelayananOld = pelayanan.getPasien().getPerawatan();
+		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+
 		/*
+		 * Update pelayanan temporal yang lama.
 		 * Jika pasien berasal dari ruangan lain, 
 		 * maka update pelayanan temporal lama dan simpan.
 		 */
+		PelayananTemporal pelayananOld = pasien.getPerawatan();
 		if (pelayananOld != null) {
 			pelayananOld.setTanggalSelesai(DateUtil.getDate());
 			pelayananOld.setJamKeluar(DateUtil.getTime());
+
+			pasien.addTotalTagihan(pelayananOld.getTagihan());
+			pelayananOld.setPasien(pasien);
 			
 			pelayananOld = pelayananRepository.save(pelayananOld);
 		}
 
-		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
 		pasien.setPerawatan(pelayanan);
 
 		/*
@@ -110,16 +115,17 @@ public class PelayananServiceImpl implements PelayananService {
 			jam = DateUtil.getTime();
 		
 		Pasien pasien = pasienRepository.findOne(id);
-		/*
-		 * Pasien dinyatakan keluar dari ruangan.
-		 */
-		pasien.setPerawatan(null);
 
 		PelayananTemporal pelayanan = pasien.getPerawatan();
 		pelayanan.setTanggalSelesai(tanggal);
 		pelayanan.setJamKeluar(jam);
 		pelayanan.setBiayaTambahan(tambahan);
 		pelayanan.setKeterangan(keterangan);
+
+		/*
+		 * Pasien dinyatakan keluar dari ruangan.
+		 */
+		pasien.setPerawatan(null);
 
 		/*
 		 * Tambah tagihan pelayanan ke total tagihan pasien.
