@@ -64,11 +64,29 @@ public class PelayananServiceImpl implements PelayananService {
 	@Transactional(readOnly = false)
 	public void masuk(PelayananTemporal pelayanan) {
 		PelayananTemporal pelayananOld = pelayanan.getPasien().getPerawatan();
+		/*
+		 * Jika pasien berasal dari ruangan lain, 
+		 * maka update pelayanan temporal lama dan simpan.
+		 */
 		if (pelayananOld != null) {
 			pelayananOld.setTanggalSelesai(DateUtil.getDate());
 			pelayananOld.setJamKeluar(DateUtil.getTime());
 			
 			pelayananOld = pelayananRepository.save(pelayananOld);
+		}
+
+		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+		pasien.setPerawatan(pelayanan);
+
+		/*
+		 * Jika pasien bukan pasien rawat inap dan unit yang menginput merupakan
+		 * RUANG PERAWATAN, maka ubah tipe perawatan menjadi RAWAT INAP dan
+		 * tanggal rawat inap menjadi hari ini.
+		 */
+		if (TipeUnit.RUANG_PERAWATAN.equals(pelayanan.getUnit().getTipe()) &&
+				!(Pasien.Perawatan.RAWAT_INAP.equals(pasien.getTipePerawatan()))) {
+			pasien.setTipePerawatan(Perawatan.RAWAT_INAP);
+			pasien.setTanggalRawatInap(DateUtil.getDate());
 		}
 
 		if (pelayanan.getTanggal() == null)
@@ -77,12 +95,7 @@ public class PelayananServiceImpl implements PelayananService {
 		if (pelayanan.getJamMasuk() == null)
 			pelayanan.setJamMasuk(DateUtil.getTime());
 
-		if (TipeUnit.RUANG_PERAWATAN.equals(pelayanan.getUnit().getTipe())) {
-			pelayanan.getPasien().setTipePerawatan(Perawatan.RAWAT_INAP);
-			pelayanan.getPasien().setTanggalRawatInap(DateUtil.getDate());
-		}
-
-		pelayanan.getPasien().setPerawatan(pelayanan);
+		pelayanan.setPasien(pasien);
 		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 		pelayanan = pelayananRepository.save(pelayanan);
 	}
@@ -97,6 +110,10 @@ public class PelayananServiceImpl implements PelayananService {
 			jam = DateUtil.getTime();
 		
 		Pasien pasien = pasienRepository.findOne(id);
+		/*
+		 * Pasien dinyatakan keluar dari ruangan.
+		 */
+		pasien.setPerawatan(null);
 
 		PelayananTemporal pelayanan = pasien.getPerawatan();
 		pelayanan.setTanggalSelesai(tanggal);
@@ -104,6 +121,9 @@ public class PelayananServiceImpl implements PelayananService {
 		pelayanan.setBiayaTambahan(tambahan);
 		pelayanan.setKeterangan(keterangan);
 
+		/*
+		 * Tambah tagihan pelayanan ke total tagihan pasien.
+		 */
 		pasien.addTotalTagihan(pelayanan.getTagihan());
 		pelayanan.setPasien(pasien);
 		
