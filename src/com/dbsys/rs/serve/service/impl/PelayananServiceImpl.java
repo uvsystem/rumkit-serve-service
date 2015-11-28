@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dbsys.rs.lib.DateUtil;
+import com.dbsys.rs.lib.NumberException;
 import com.dbsys.rs.lib.PasienOutException;
 import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
@@ -31,8 +32,20 @@ public class PelayananServiceImpl implements PelayananService {
 	
 	@Override
 	@Transactional(readOnly = false)
-	public Pelayanan simpan(Pelayanan pelayanan) throws PasienOutException {
+	public Pelayanan simpan(Pelayanan pelayanan) throws PasienOutException, NumberException {
+		/*
+		 * Jumlah pelayanan harus lebih dari 0.
+		 * Jika tidak sistem akan menolak.
+		 */
+		if (pelayanan.getJumlah() <= 0)
+			throw new NumberException("Jumlah tindakan tidak boleh 0");
+			
 		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+		
+		/*
+		 * Pelayanan tidak bisa ditambahkan pada pasien yang sudah keluar.
+		 * Sistem akan langsung menolak.
+		 */
 		if (Pasien.StatusPasien.KELUAR.equals(pasien.getStatus()))
 			throw new PasienOutException("Tidak bisa menambahan tagihan untuk pasien yang sudah keluar");
 
@@ -42,7 +55,7 @@ public class PelayananServiceImpl implements PelayananService {
 		if (pelayanan.getStatus() == null)
 			pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 
-		/**
+		/*
 		 * Jika pelayanan PERSISTED (merupakan fungsi update),
 		 * kurangi total tagihan pasien, sesuai tagihan pelayanan yang lama.
 		 */
@@ -52,7 +65,7 @@ public class PelayananServiceImpl implements PelayananService {
 			pasien.substractTotalTagihan(pelayananOld.getTagihan());
 		}
 
-		/**
+		/*
 		 * Tambahkan tagihan pelayanan yang baru ke total tagihan pasien.
 		 */
 		pasien.addTotalTagihan(pelayanan.getTagihan());
@@ -65,8 +78,14 @@ public class PelayananServiceImpl implements PelayananService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public void masuk(PelayananTemporal pelayanan) {
+	public void masuk(PelayananTemporal pelayanan) throws PasienOutException {
 		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+		/*
+		 * Pelayanan tidak bisa ditambahkan pada pasien yang sudah keluar.
+		 * Sistem akan menolak.
+		 */
+		if (Pasien.StatusPasien.KELUAR.equals(pasien.getStatus()))
+			throw new PasienOutException("Tidak bisa menambahan tagihan untuk pasien yang sudah keluar");
 
 		/*
 		 * Update pelayanan temporal yang lama.
