@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+import com.dbsys.rs.lib.PasienOutException;
 import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
@@ -22,8 +23,10 @@ public interface PelayananService {
 	 * @param pelayanan
 	 * 
 	 * @return pelayanan yang sudah tersimpan
+	 * 
+	 * @throws PasienOutException proses melibatkan pasien yang sudah keluar
 	 */
-	Pelayanan simpan(Pelayanan pelayanan);
+	Pelayanan simpan(Pelayanan pelayanan) throws PasienOutException;
 
 	/**
 	 * Mengambil pelayanan tindakan terhadap pasien menurut {@code id}.

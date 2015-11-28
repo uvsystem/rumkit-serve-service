@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dbsys.rs.lib.DateUtil;
+import com.dbsys.rs.lib.PasienOutException;
 import com.dbsys.rs.lib.entity.Pasien;
 import com.dbsys.rs.lib.entity.Pelayanan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
@@ -30,14 +31,16 @@ public class PelayananServiceImpl implements PelayananService {
 	
 	@Override
 	@Transactional(readOnly = false)
-	public Pelayanan simpan(Pelayanan pelayanan) {
+	public Pelayanan simpan(Pelayanan pelayanan) throws PasienOutException {
+		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
+		if (Pasien.StatusPasien.KELUAR.equals(pasien.getStatus()))
+			throw new PasienOutException("Tidak bisa menambahan tagihan untuk pasien yang sudah keluar");
+
 		if (pelayanan.getTanggal() == null)
 			pelayanan.setTanggal(DateUtil.getDate());
 
 		if (pelayanan.getStatus() == null)
 			pelayanan.setStatus(StatusTagihan.MENUNGGAK);
-
-		Pasien pasien = pasienRepository.findOne(pelayanan.getPasien().getId());
 
 		/**
 		 * Jika pelayanan PERSISTED (merupakan fungsi update),

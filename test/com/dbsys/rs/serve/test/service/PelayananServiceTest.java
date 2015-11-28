@@ -11,6 +11,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dbsys.rs.lib.ApplicationException;
 import com.dbsys.rs.lib.DateUtil;
 import com.dbsys.rs.lib.Kelas;
 import com.dbsys.rs.lib.Penanggung;
@@ -45,7 +46,7 @@ public class PelayananServiceTest {
 	private PasienRepository pasienRepository;
 
 	@Test
-	public void testInsert() {
+	public void testInsert() throws ApplicationException {
 		Tindakan tindakan = new Tindakan();
 		tindakan.setKelas(Kelas.I);
 		tindakan.setKeterangan(null);
@@ -113,7 +114,7 @@ public class PelayananServiceTest {
 	}
 
 	@Test
-	public void testUpdate() {
+	public void testUpdate() throws ApplicationException {
 		Tindakan tindakan = new Tindakan();
 		tindakan.setKelas(Kelas.I);
 		tindakan.setKeterangan(null);

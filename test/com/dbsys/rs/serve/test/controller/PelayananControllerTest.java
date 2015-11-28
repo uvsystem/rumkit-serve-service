@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.dbsys.rs.lib.ApplicationException;
 import com.dbsys.rs.lib.DateUtil;
 import com.dbsys.rs.lib.Kelas;
 import com.dbsys.rs.lib.Penanggung;
@@ -64,7 +65,7 @@ public class PelayananControllerTest {
 	private Pasien pasien;
 	
 	@Before
-	public void setup() {
+	public void setup() throws ApplicationException {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
 		
 		count = pelayananRepository.count();
