@@ -57,4 +57,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.component
+
 /target/
+target/
+
+target/m2e-wtp/web-resources/META-INF/maven/com.dbsys.rs/rumkit-serve-service/pom.properties

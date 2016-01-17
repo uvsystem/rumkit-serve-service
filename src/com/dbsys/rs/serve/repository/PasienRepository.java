@@ -1,23 +1,32 @@
 package com.dbsys.rs.serve.repository;
 
+import java.sql.Date;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.dbsys.rs.lib.Kelas;
 import com.dbsys.rs.lib.entity.Pasien;
+import com.dbsys.rs.lib.entity.Pasien.Perawatan;
 import com.dbsys.rs.lib.entity.PelayananTemporal;
-import com.dbsys.rs.lib.entity.Pasien.Type;
 
 public interface PasienRepository extends JpaRepository<Pasien, Long> {
 
 	@Modifying(clearAutomatically = true)
-	@Query("UPDATE Pasien p SET p.kelas = :kelas, p.tipe = :tipe, p.perawatan = :perawatan WHERE p.id = :id")
-	void convert(@Param("id") Long id, @Param("kelas") Kelas kelas, @Param("tipe") Type tipe, @Param("perawatan") PelayananTemporal perawatan);
+	@Query("UPDATE Pasien p SET p.tipePerawatan = :tipe, p.perawatan = :perawatan, p.tanggalRawatInap = :tanggal WHERE p.id = :id")
+	void convert(@Param("id") Long id, @Param("tipe") Perawatan tipe, @Param("perawatan") PelayananTemporal perawatan, @Param("tanggal") Date tanggalRawatInap);
 
 	@Modifying(clearAutomatically = true)
 	@Query("UPDATE Pasien p SET p.perawatan = :perawatan WHERE p.id = :id")
-	void keluar(@Param("id") Long id, @Param("perawatan") PelayananTemporal perawatan);
+	void convert(@Param("id") Long id, @Param("perawatan") PelayananTemporal pelayanan);
+
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE Pasien p SET p.totalTagihan = :tagihan WHERE p.id = :id")
+	void updateTagihan(@Param("id") Long id, @Param("tagihan") long tagihan);
+
+	@Modifying(clearAutomatically = true)
+	@Query("UPDATE Pasien p SET p.totalTagihan = :tagihan, p.perawatan = :perawatan WHERE p.id = :id")
+	void updateTagihan(@Param("id") Long id, @Param("tagihan") long tagihan, @Param("perawatan") PelayananTemporal pelayanan);
 	
 }
