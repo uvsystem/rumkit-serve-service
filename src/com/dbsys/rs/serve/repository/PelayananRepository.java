@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.dbsys.rs.lib.entity.Pasien;
-import com.dbsys.rs.lib.entity.Pelayanan;
+import com.dbsys.rs.serve.entity.Pasien;
+import com.dbsys.rs.serve.entity.Pelayanan;
 
 public interface PelayananRepository extends JpaRepository<Pelayanan, Long> {
 

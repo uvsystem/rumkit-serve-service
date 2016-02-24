@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dbsys.rs.lib.ApplicationException;
-import com.dbsys.rs.lib.EntityRestMessage;
-import com.dbsys.rs.lib.ListEntityRestMessage;
-import com.dbsys.rs.lib.entity.Pasien;
-import com.dbsys.rs.lib.entity.Pelayanan;
+import com.dbsys.rs.ApplicationException;
+import com.dbsys.rs.EntityRestMessage;
+import com.dbsys.rs.ListEntityRestMessage;
+import com.dbsys.rs.serve.entity.Pasien;
+import com.dbsys.rs.serve.entity.Pelayanan;
 import com.dbsys.rs.serve.service.PelayananService;
 
 @Controller
@@ -30,27 +30,27 @@ public class PelayananController {
 	@ResponseBody
 	public EntityRestMessage<Pelayanan> simpan(@RequestBody Pelayanan pelayanan) throws ApplicationException, PersistenceException {
 		pelayanan = pelayananService.simpan(pelayanan);
-		return EntityRestMessage.createPelayanan(pelayanan);
+		return new EntityRestMessage<Pelayanan>(pelayanan);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
 	@ResponseBody
 	public EntityRestMessage<Pasien> hapus(@PathVariable Long id) throws ApplicationException, PersistenceException {
 		Pasien pasien = pelayananService.hapus(id);
-		return EntityRestMessage.createPasien(pasien);
+		return new EntityRestMessage<Pasien>(pasien);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@ResponseBody
 	public EntityRestMessage<Pelayanan> getById(@PathVariable Long id) throws ApplicationException, PersistenceException {
 		Pelayanan pelayanan = (Pelayanan)pelayananService.getById(id);
-		return EntityRestMessage.createPelayanan(pelayanan);
+		return new EntityRestMessage<Pelayanan>(pelayanan);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/pasien/{id}")
 	@ResponseBody
 	public ListEntityRestMessage<Pelayanan> getByPasien(@PathVariable Long id) throws ApplicationException, PersistenceException {
 		List<Pelayanan> list = pelayananService.getByPasien(id);
-		return ListEntityRestMessage.createListPelayanan(list);
+		return new ListEntityRestMessage<Pelayanan>(list);
 	}
 }

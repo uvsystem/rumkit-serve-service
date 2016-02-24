@@ -6,19 +6,19 @@ import java.time.Month;
 
 import org.junit.Test;
 
-import com.dbsys.rs.lib.DateUtil;
-import com.dbsys.rs.lib.Kelas;
-import com.dbsys.rs.lib.Penanggung;
-import com.dbsys.rs.lib.entity.Pasien;
-import com.dbsys.rs.lib.entity.Pelayanan;
-import com.dbsys.rs.lib.entity.PelayananTemporal;
-import com.dbsys.rs.lib.entity.Tindakan;
-import com.dbsys.rs.lib.entity.Unit;
-import com.dbsys.rs.lib.entity.Pasien.Pendaftaran;
-import com.dbsys.rs.lib.entity.Pasien.Perawatan;
-import com.dbsys.rs.lib.entity.Pasien.StatusPasien;
-import com.dbsys.rs.lib.entity.Tagihan.StatusTagihan;
-import com.dbsys.rs.lib.entity.Tindakan.SatuanTindakan;
+import com.dbsys.rs.DateUtil;
+import com.dbsys.rs.Kelas;
+import com.dbsys.rs.Penanggung;
+import com.dbsys.rs.serve.entity.Pasien;
+import com.dbsys.rs.serve.entity.Pelayanan;
+import com.dbsys.rs.serve.entity.PelayananTemporal;
+import com.dbsys.rs.serve.entity.Tindakan;
+import com.dbsys.rs.serve.entity.Unit;
+import com.dbsys.rs.serve.entity.Pasien.Pendaftaran;
+import com.dbsys.rs.serve.entity.Pasien.Perawatan;
+import com.dbsys.rs.serve.entity.Pasien.StatusPasien;
+import com.dbsys.rs.serve.entity.Tagihan.StatusTagihan;
+import com.dbsys.rs.serve.entity.Tindakan.SatuanTindakan;
 
 public class PelayananTest {
 
@@ -226,8 +226,8 @@ public class PelayananTest {
 		pelayanan.setJamKeluar(DateUtil.getTime(12, 0, 0));
 		pelayanan.setStatus(StatusTagihan.MENUNGGAK);
 
-		assertEquals(new Long(110000), pelayanan.getTagihan());
-		assertEquals(new Long(110000), pelayanan.getTagihanCounted());
+		assertEquals(new Long(210000), pelayanan.getTagihan());
+		assertEquals(new Long(210000), pelayanan.getTagihanCounted());
 	}
 
 	@Test

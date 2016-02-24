@@ -4,11 +4,11 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
-import com.dbsys.rs.lib.NumberException;
-import com.dbsys.rs.lib.PasienOutException;
-import com.dbsys.rs.lib.entity.Pasien;
-import com.dbsys.rs.lib.entity.Pelayanan;
-import com.dbsys.rs.lib.entity.PelayananTemporal;
+import com.dbsys.rs.NumberException;
+import com.dbsys.rs.serve.PasienOutException;
+import com.dbsys.rs.serve.entity.Pasien;
+import com.dbsys.rs.serve.entity.Pelayanan;
+import com.dbsys.rs.serve.entity.PelayananTemporal;
 
 /**
  * Interface untuk memproses pelayanan tindakan terhadap pasien.

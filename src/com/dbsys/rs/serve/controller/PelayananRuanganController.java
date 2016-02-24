@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.dbsys.rs.lib.ApplicationException;
-import com.dbsys.rs.lib.RestMessage;
-import com.dbsys.rs.lib.entity.PelayananTemporal;
+import com.dbsys.rs.ApplicationException;
+import com.dbsys.rs.RestMessage;
+import com.dbsys.rs.serve.entity.PelayananTemporal;
 import com.dbsys.rs.serve.service.PelayananService;
 
 @Controller

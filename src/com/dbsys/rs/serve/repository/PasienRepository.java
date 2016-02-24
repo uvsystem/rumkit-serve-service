@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.dbsys.rs.lib.entity.Pasien;
-import com.dbsys.rs.lib.entity.Pasien.Perawatan;
-import com.dbsys.rs.lib.entity.PelayananTemporal;
+import com.dbsys.rs.serve.entity.Pasien;
+import com.dbsys.rs.serve.entity.Pasien.Perawatan;
+import com.dbsys.rs.serve.entity.PelayananTemporal;
 
 public interface PasienRepository extends JpaRepository<Pasien, Long> {
 
