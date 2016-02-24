@@ -13,6 +13,8 @@ import javax.persistence.Transient;
 
 import com.dbsys.rs.Tanggungan;
 import com.dbsys.rs.Penanggung;
+import com.dbsys.rs.serve.entity.Pembayaran;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @MappedSuperclass
@@ -31,6 +33,7 @@ public abstract class Tagihan {
 
 	protected Pasien pasien;
 	protected Unit unit;
+	protected Pembayaran pembayaran;
 
 	protected StatusTagihan status;
 	protected Tanggungan tanggungan;
@@ -105,6 +108,17 @@ public abstract class Tagihan {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
+	}
+
+	@JsonBackReference
+	@ManyToOne
+	@JoinColumn(name = "pembayaran")
+	public Pembayaran getPembayaran() {
+		return pembayaran;
+	}
+
+	public void setPembayaran(Pembayaran pembayaran) {
+		this.pembayaran = pembayaran;
 	}
 
 	@Column(name = "status_tagihan")
