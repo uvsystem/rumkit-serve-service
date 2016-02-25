@@ -1,6 +1,5 @@
 package com.dbsys.rs.serve.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
@@ -60,8 +59,8 @@ public class Pelayanan extends Tagihan {
 		this.tipePelayanan = tipePelayanan;
 	}
 
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
-	// @ManyToOne
+	// @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
+	@ManyToOne
 	@JoinColumn(name = "tindakan")
 	public Tindakan getTindakan() {
 		return tindakan;
@@ -72,8 +71,8 @@ public class Pelayanan extends Tagihan {
 		this.tanggungan = tindakan;
 	}
 
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
-	// @ManyToOne
+	// @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
+	@ManyToOne
 	@JoinColumn(name = "pelaksana")
 	public Pegawai getPelaksana() {
 		return pelaksana;

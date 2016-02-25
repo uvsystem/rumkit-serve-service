@@ -2,7 +2,6 @@ package com.dbsys.rs.serve.entity;
 
 import java.sql.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -99,8 +98,8 @@ public abstract class Tagihan {
 		this.pasien = pasien;
 	}
 
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
-	// @ManyToOne
+	// @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
+	@ManyToOne
 	@JoinColumn(name = "unit")
 	public Unit getUnit() {
 		return unit;
