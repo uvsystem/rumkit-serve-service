@@ -60,16 +60,32 @@ public class PembayaranServiceImpl implements PembayaranService {
 
 	@Override
 	public Pembayaran get(String kode) {
-		return pembayaranRepository.findOne(kode);
+		Pembayaran pembayaran = pembayaranRepository.findOne(kode);
+		pembayaran.setListPelayanan(null);
+		pembayaran.setListPemakaian(null);
+		
+		return pembayaran;
 	}
 
 	@Override
 	public List<Pembayaran> get(Long pasien) {
-		return pembayaranRepository.findByPasien_Id(pasien);
+		List<Pembayaran> list  = pembayaranRepository.findByPasien_Id(pasien);
+		for (Pembayaran pembayaran : list) {
+			pembayaran.setListPelayanan(null);
+			pembayaran.setListPemakaian(null);
+		}
+
+		return list;
 	}
 
 	@Override
 	public List<Pembayaran> get(Date awal, Date akhir) {
-		return pembayaranRepository.findByTanggalBetween(awal, akhir);
+		List<Pembayaran> list = pembayaranRepository.findByTanggalBetween(awal, akhir);
+		for (Pembayaran pembayaran : list) {
+			pembayaran.setListPelayanan(null);
+			pembayaran.setListPemakaian(null);
+		}
+		
+		return list;
 	}
 }

@@ -87,7 +87,7 @@ public class Pembayaran implements CodedEntity {
 		this.pasien = pasien;
 	}
 
-	@OneToMany(mappedBy = "pembayaran", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "pembayaran", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	public List<Pelayanan> getListPelayanan() {
 		return listPelayanan;
 	}
