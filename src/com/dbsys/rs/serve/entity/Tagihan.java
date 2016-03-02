@@ -15,8 +15,19 @@ import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.entity.Pembayaran;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @MappedSuperclass
+@JsonTypeInfo(
+	use = JsonTypeInfo.Id.NAME,
+	include = JsonTypeInfo.As.PROPERTY,
+	property = "tipeTagihan"
+)
+@JsonSubTypes({
+	@JsonSubTypes.Type(value = Pelayanan.class, name = "PELAYANAN"),
+	@JsonSubTypes.Type(value = Pemakaian.class, name = "PEMAKAIAN")
+})
 public abstract class Tagihan {
 	
 	public enum StatusTagihan {
@@ -36,12 +47,28 @@ public abstract class Tagihan {
 
 	protected StatusTagihan status;
 	protected Tanggungan tanggungan;
+	
+	protected String tipeTagihan;
 
 	protected Tagihan() {
 		super();
 		this.status = StatusTagihan.MENUNGGAK;
 	}
-	
+
+	protected Tagihan(String tipeTagihan) {
+		this();
+		this.tipeTagihan = tipeTagihan;
+	}
+
+	@Transient
+	public String getTipeTagihan() {
+		return tipeTagihan;
+	}
+
+	public void setTipeTagihan(String tipeTagihan) {
+		this.tipeTagihan = tipeTagihan;
+	}
+
 	@Id
 	@GeneratedValue
 	public Long getId() {

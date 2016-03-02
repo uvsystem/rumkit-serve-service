@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dbsys.rs.DateUtil;
 import com.dbsys.rs.NumberException;
+import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.PasienOutException;
 import com.dbsys.rs.serve.entity.Pasien;
 import com.dbsys.rs.serve.entity.Pelayanan;
@@ -182,5 +183,12 @@ public class PelayananServiceImpl implements PelayananService {
 	@Override
 	public List<Pelayanan> getByPasien(Long id) {
 		return pelayananRepository.findByPasien_Id(id);
+	}
+
+	@Override
+	public List<Pelayanan> get(Date awal, Date akhir, Penanggung penanggung) {
+		if (Penanggung.BPJS.equals(penanggung))
+			return pelayananRepository.findByTanggalBetweenAndPasien_PenanggungAndTindakan_PenanggungOrderByPasien_KodeAsc(awal, akhir, penanggung, penanggung);
+		return pelayananRepository.findByTanggalBetweenAndPasien_PenanggungOrTindakan_PenanggungOrderByPasien_KodeAsc(awal, akhir, penanggung, penanggung);
 	}
 }

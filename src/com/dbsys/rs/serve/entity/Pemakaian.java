@@ -17,6 +17,10 @@ public class Pemakaian extends Tagihan implements CodedEntity {
 
 	private Barang barang;
 	private String nomorResep;
+
+	public Pemakaian() {
+		super("PEMAKAIAN");
+	}
 	
 	@ManyToOne
 	@JoinColumn(name = "barang")

@@ -41,21 +41,20 @@ public class Pelayanan extends Tagihan {
 	private String tipePelayanan;
 
 	public Pelayanan() {
-		super();
-		this.tipePelayanan = "PELAYANAN";
+		this("PELAYANAN");
 	}
 	
-	public Pelayanan(String name) {
-		super();
-		this.tipePelayanan = name;
+	public Pelayanan(String tipePelayanan) {
+		super("PELAYANAN");
+		this.tipePelayanan = tipePelayanan;
 	}
 
 	@Transient
-	public String getTipe() {
+	public String getTipePelayanan() {
 		return tipePelayanan;
 	}
 
-	public void setTipe(String tipePelayanan) {
+	public void setTipePelayanan(String tipePelayanan) {
 		this.tipePelayanan = tipePelayanan;
 	}
 

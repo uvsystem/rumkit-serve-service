@@ -1,5 +1,6 @@
 package com.dbsys.rs.serve.service.impl;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.dbsys.rs.DateUtil;
 import com.dbsys.rs.NumberException;
+import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.PasienOutException;
 import com.dbsys.rs.serve.entity.Barang;
 import com.dbsys.rs.serve.entity.Pasien;
@@ -101,5 +103,12 @@ public class PemakaianServiceImpl implements PemakaianService {
 	@Override
 	public List<Pemakaian> getByNomorResep(String nomorResep) {
 		return pemakaianRepository.findByNomorResep(nomorResep);
+	}
+
+	@Override
+	public List<Pemakaian> get(Date awal, Date akhir, Penanggung penanggung) {
+		if (Penanggung.BPJS.equals(penanggung))
+			return pemakaianRepository.findByTanggalBetweenAndPasien_PenanggungAndBarang_PenanggungOrderByPasien_KodeAsc(awal, akhir, penanggung, penanggung);
+		return pemakaianRepository.findByTanggalBetweenAndPasien_PenanggungOrBarang_PenanggungOrderByPasien_KodeAsc(awal, akhir, penanggung, penanggung);
 	}
 }

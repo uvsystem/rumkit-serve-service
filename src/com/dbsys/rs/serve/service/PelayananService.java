@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.util.List;
 
 import com.dbsys.rs.NumberException;
+import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.PasienOutException;
 import com.dbsys.rs.serve.entity.Pasien;
 import com.dbsys.rs.serve.entity.Pelayanan;
@@ -47,6 +48,8 @@ public interface PelayananService {
 	 * @return daftar pelayanan tindakan
 	 */
 	List<Pelayanan> getByPasien(Long id);
+
+	List<Pelayanan> get(Date awal, Date akhir, Penanggung penanggung);
 
 	Pelayanan keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan);
 

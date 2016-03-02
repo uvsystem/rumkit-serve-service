@@ -1,9 +1,11 @@
 package com.dbsys.rs.serve.service;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.dbsys.rs.ApplicationException;
 import com.dbsys.rs.NumberException;
+import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.PasienOutException;
 import com.dbsys.rs.serve.entity.Pemakaian;
 
@@ -43,6 +45,8 @@ public interface PemakaianService {
 	 * @return daftar pemakaian barang
 	 */
 	List<Pemakaian> getByPasien(Long id);
+
+	List<Pemakaian> get(Date awal, Date akhir, Penanggung penanggung);
 
 	/**
 	 * Mengambil daftar pemakaian obat berdasarkan nomor resep.
