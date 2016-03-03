@@ -14,6 +14,7 @@ import com.dbsys.rs.serve.PasienOutException;
 import com.dbsys.rs.serve.entity.Barang;
 import com.dbsys.rs.serve.entity.Pasien;
 import com.dbsys.rs.serve.entity.Pemakaian;
+import com.dbsys.rs.serve.entity.Tagihan.StatusTagihan;
 import com.dbsys.rs.serve.repository.BarangRepository;
 import com.dbsys.rs.serve.repository.PasienRepository;
 import com.dbsys.rs.serve.repository.PemakaianRepository;
@@ -47,19 +48,25 @@ public class PemakaianServiceImpl implements PemakaianService {
 			throw new PasienOutException("Tidak bisa menambah tagihan untuk pasien yang sudah keluar");
 
 		Barang barang = barangRepository.findOne(pemakaian.getBarang().getId());
-		barang.substract(pemakaian.getJumlah());
-		pemakaian.setBarang(barang);
 
 		/*
 		 * Jika pemakaian PERSISTED (merupakan fungsi update),
 		 * kurangi total tagihan pasien, sesuai tagihan pemakaian yang lama.
+		 * Tambahkan jumlah barang, sesuai pemakaian lama.
 		 */
 		if (pemakaian.isPersisted()) {
 			Pemakaian pemakaianOld = pemakaianRepository.findOne(pemakaian.getId());
 			
 			pasien.substractTotalTagihan(pemakaianOld.getTagihan());
+			barang.add(pemakaianOld.getJumlah());
 		}
-		
+
+		/*
+		 * Kurangi jumlah barang, sesuai jumlah pemakaian.
+		 */
+		barang.substract(pemakaian.getJumlah());
+		pemakaian.setBarang(barang);
+
 		/*
 		 * Tambahkan tagihan pemakaian yang baru ke total tagihan pasien.
 		 */
@@ -68,6 +75,10 @@ public class PemakaianServiceImpl implements PemakaianService {
 
 		if (pemakaian.getTanggal() == null)
 			pemakaian.setTanggal(DateUtil.getDate());
+
+		if (pemakaian.getStatus() == null)
+			pemakaian.setStatus(StatusTagihan.MENUNGGAK);
+
 		pemakaianRepository.save(pemakaian);
 
 		return pemakaian;

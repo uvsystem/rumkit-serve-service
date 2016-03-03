@@ -51,10 +51,28 @@ public interface PelayananService {
 
 	List<Pelayanan> get(Date awal, Date akhir, Penanggung penanggung);
 
+	Pasien hapus(Long id);
+
+	/**
+	 * Deprecated. Keluar/masuk ruang perawatan dipindahkan menjadi fungsi pasien service.
+	 * 
+	 * @param id
+	 * @param tanggal
+	 * @param jam
+	 * @param tambahan
+	 * @param keterangan
+	 * @return
+	 */
+	@Deprecated
 	Pelayanan keluar(Long id, Date tanggal, Time jam, Long tambahan, String keterangan);
 
+	/**
+	 * Deprecated. Keluar/masuk ruang perawatan dipindahkan menjadi fungsi pasien service.
+	 * 
+	 * @param pelayanan
+	 * @throws PasienOutException
+	 */
+	@Deprecated
 	void masuk(PelayananTemporal pelayanan) throws PasienOutException;
-
-	Pasien hapus(Long id);
 
 }
