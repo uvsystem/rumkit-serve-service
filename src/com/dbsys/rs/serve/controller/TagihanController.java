@@ -35,9 +35,17 @@ public class TagihanController {
 	@ResponseBody
 	public ListEntityRestMessage<Tagihan> get(@PathVariable Date awal, @PathVariable Date akhir, @PathVariable Penanggung penanggung) throws ApplicationException, PersistenceException {
 		List<Tagihan> list = new ArrayList<>();
-		List<Pelayanan> listPelayanan = pelayananService.get(awal, akhir, penanggung);
-		List<Pemakaian> listPemakaian = pemakaianService.get(awal, akhir, penanggung);
-
+		List<Pelayanan> listPelayanan = new ArrayList<>();
+		List<Pemakaian> listPemakaian = new ArrayList<>();
+		
+		try {
+			listPelayanan = pelayananService.get(awal, akhir, penanggung);
+		} catch (PersistenceException ex) {}
+		
+		try {
+			listPemakaian = pemakaianService.get(awal, akhir, penanggung);
+		} catch (PersistenceException ex) {}
+		
 		for (Tagihan tagihan : listPelayanan)
 			list.add(tagihan);
 		
