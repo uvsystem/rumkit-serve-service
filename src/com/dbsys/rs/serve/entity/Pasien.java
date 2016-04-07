@@ -172,7 +172,7 @@ public class Pasien implements Tanggungan, CodedEntity {
 		this.penanggung = penanggung;
 	}
 
-	// @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
+	//@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
 	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "penduduk")
 	public Penduduk getPenduduk() {
@@ -256,6 +256,7 @@ public class Pasien implements Tanggungan, CodedEntity {
 		this.ruangPerawatan = ruangPerawatan;
 	}	
 
+	//@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}) // Testing
 	@ManyToOne
 	@JoinColumn(name = "tujuan")
 	public Unit getTujuan() {

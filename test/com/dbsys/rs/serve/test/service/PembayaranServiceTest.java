@@ -139,4 +139,59 @@ public class PembayaranServiceTest {
 		assertNotNull(pembayaran.getJam());
 		assertEquals(countPembayaran + 1, pembayaranRepository.count());
 	}
+
+	@Test
+	public void testKurang() throws ApplicationException {
+		Penduduk penduduk = new Penduduk();
+		penduduk.setKode("kode xxxxxxxxxxxxx");
+		penduduk.setAgama("Kristen");
+		penduduk.setDarah("O");
+		penduduk.setKelamin(Kelamin.PRIA);
+		penduduk.setNama("Penduduk xxxxxxxxxxxxx");
+		penduduk.setNik("Nik xxxxxxxxxxxxx");
+		penduduk.setTanggalLahir(DateUtil.getDate());
+		penduduk.setTelepon("Telepon");
+		
+		Unit unit = new Unit();
+		unit.setNama("Nama Unit xxxxxxxxxxxxxxx");
+		unit.setTipe(Unit.TipeUnit.APOTEK_FARMASI);
+		unit.setBobot(1f);
+
+		Pasien pasien = new Pasien();
+		String kode = pasien.generateKode();
+
+		pasien.setPenduduk(penduduk);
+		pasien.setPenanggung(Penanggung.BPJS);
+		pasien.setStatus(StatusPasien.PERAWATAN);
+		pasien.setTipePerawatan(Perawatan.RAWAT_JALAN);
+		pasien.setTanggalMasuk(DateUtil.getDate());
+		pasien.setPendaftaran(Pendaftaran.LOKET);
+		pasien.setTujuan(unit);
+		pasien.setKode(kode);
+		pasien = pasienRepository.save(pasien);
+		
+		Penduduk penduduk2 = new Penduduk();
+		penduduk2.setKode("kode yyyyyyyyy");
+		penduduk2.setAgama("Kristen");
+		penduduk2.setDarah("O");
+		penduduk2.setKelamin(Kelamin.PRIA);
+		penduduk2.setNama("Penduduk yyyyyyyyyyyyyy");
+		penduduk2.setNik("Nik yyyyyyyyyyyyyy");
+		penduduk2.setTanggalLahir(DateUtil.getDate());
+		penduduk2.setTelepon("Telepon");
+
+		long countPembayaran = pembayaranRepository.count();
+		
+		Pembayaran pembayaran = new Pembayaran();
+		pembayaran.setKode("BYR xxxxx");
+		pembayaran.setJumlah(-50000L);
+		pembayaran.setPasien(pasien);
+		pembayaran = pembayaranService.simpan(pembayaran);
+		
+		assertNotNull(pembayaran.getTanggal());
+		assertNotNull(pembayaran.getJam());
+		assertEquals(new Long(-50000), pembayaran.getJumlah());
+		assertEquals(new Long(-50000), pasien.getCicilan());
+		assertEquals(countPembayaran + 1, pembayaranRepository.count());
+	}
 }
