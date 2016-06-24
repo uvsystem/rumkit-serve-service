@@ -28,7 +28,7 @@
     <init-param>
       <param-name>cors.allowed.origins</param-name>
       <param-value>
-		  https://uvs.web.id,
+		  https://222.124.150.12,
 		  http://localhost
 	</param-value>
     </init-param>
