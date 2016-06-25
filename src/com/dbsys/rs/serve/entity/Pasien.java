@@ -19,9 +19,11 @@ import com.dbsys.rs.Tanggungan;
 import com.dbsys.rs.Penanggung;
 import com.dbsys.rs.serve.entity.Penduduk.Kelamin;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "pasien")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Pasien implements Tanggungan, CodedEntity {
 
 	public enum StatusPasien {

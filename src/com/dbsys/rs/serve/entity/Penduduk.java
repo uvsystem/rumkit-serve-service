@@ -1,3 +1,4 @@
+
 package com.dbsys.rs.serve.entity;
 
 import java.sql.Date;
@@ -10,9 +11,12 @@ import javax.persistence.Table;
 
 import com.dbsys.rs.CodedEntity;
 import com.dbsys.rs.DateUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "penduduk")
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Penduduk implements CodedEntity {
 
 	public enum Kelamin {
